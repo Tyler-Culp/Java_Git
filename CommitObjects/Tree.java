@@ -1,4 +1,4 @@
-package Commit_Objects;
+package CommitObjects;
 
 public class Tree {
     
