@@ -1,24 +1,35 @@
 package Commands;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 
 import CommitObjects.Blob;
 
 public class Status {
+    public ArrayList<File> getChangedFiles() throws FileNotFoundException {
+        String homeDir = System.getProperty("user.dir"); // This is the directory user is running the commands from
+        File file = new File(homeDir);
+        return getChangedFiles(file);
+    }
+
     /**
      * @param topLevelDir - The top level directory (full path) of the project you want to track
      * @return A list of files which have changed
+     * @throws FileNotFoundException 
+     * 
+     * A recursive function starting at the top level of project it is tracking
      */
-    public ArrayList<File> getChangedFiles(File topLevelDir){
-        ArrayList<File> changedFiles = new ArrayList<File>();
+    private ArrayList<File> getChangedFiles(File topLevelDir) throws FileNotFoundException {
+        ArrayList<File> changedFiles = new ArrayList<File>(); // List to store all the changed files
         File[] childFiles = topLevelDir.listFiles();
+
         if (childFiles != null && childFiles.length > 0) {
             for (File file : childFiles) {
                 if (file.isDirectory()) {
                     changedFiles.addAll(getChangedFiles(file));
                 }
-                else {
+                else if (hasFileChanged(file)) {
                     changedFiles.add(file);
                 }
             }
@@ -34,21 +45,64 @@ public class Status {
      * Check if it is tracked by looking at commit sha in HEAD and tracing things backwards
      */
     private boolean hasFileChanged(File file) throws FileNotFoundException {
-        File index = new File("../.jit/index");
-        File objectFolder = new File("../.jit/objects");
-
-        // TODO: Reformat this to call something like checkIndex() and checkObjects() only
-        // if there is nothing in index or object folder than this is a fresh repo
-
-        if (index.length() == 0 && objectFolder.listFiles().length == 0) {
-            return true;
-        }
-
         Blob toCheck = new Blob(file);
         String hash = toCheck.hash();
 
-        // TODO: Check if the hash matches anything in index or in the objectFolder
+        boolean hasChangedInObjects = hasFileChangedInObjects(file, hash);
 
-        return false;
+        if (!hasChangedInObjects) return false;
+
+        return hasFileChangedInIndex(file, hash);
+    }
+    private boolean hasFileChangedInIndex(File file, String hash) {
+        /*
+         * Index file need to have form line
+         * fileName | size | hash | timestamp(?)
+         */
+        File index = new File("../.jit/index");
+        Scanner sc;
+        try {
+            sc = new Scanner(index);
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                if (line.contains(file.getName())) { // currently tracking in index file
+                    sc.close();
+                    if (line.contains(hash)) { // Hash is same so file is unchanged
+                        return false;
+                    }
+                    else { // Hash is different so file is different
+                        return true;
+                    }
+                }
+            }
+            sc.close();
+            return true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean hasFileChangedInObjects(File file, String hash) {
+        File objectFolder = new File("../.jit/objects");
+        String topOfHash = hash.substring(0, 2);
+        String bottomOfHash = hash.substring(2);
+
+        File[] objectFolderFiles = objectFolder.listFiles();
+
+        // Need to check if file hash matches any we currently are tracking in objects
+        // Because of the way git tracks object with front two part of hash being parent folder means nested loop is needed
+        // Ends up actually only being O(n) I'm pretty sure though since the number of top two hash digits is constant
+        for (File objectFile : objectFolderFiles) {
+            if (objectFile.getName().startsWith(topOfHash)) { // Found a folder with same top level hash
+                File[] nestedObjectFiles = objectFile.listFiles();
+                for (File nestedFile : nestedObjectFiles) {
+                    if (nestedFile.getName().contains(bottomOfHash)) { // Found the same exact hash meaning file has not changed
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

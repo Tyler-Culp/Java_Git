@@ -8,7 +8,7 @@ import java.io.IOException;
  */
 
 public class Initiate {
-    String homeDir = System.getProperty("user.dir");
+    String homeDir = System.getProperty("user.dir"); // This is the directory user is running the commands from
 
     public void createDirStructure() {
         String currDir = this.homeDir;
