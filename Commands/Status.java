@@ -34,6 +34,7 @@ public class Status {
 
         if (childFiles != null && childFiles.length > 0) {
             for (File file : childFiles) {
+                if (file.getName().equals(".jit") || file.getName().equals(".git")) continue; // don't want to track the actual .jit folder (this would be a loop)
                 if (file.isDirectory()) {
                     changedFiles.addAll(getChangedFiles(file));
                 }
