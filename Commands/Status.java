@@ -1,16 +1,24 @@
-package Commands;
+package JavaGit.Commands;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import CommitObjects.Blob;
+import JavaGit.CommitObjects.Blob;
 
 public class Status {
-    public ArrayList<File> getChangedFiles() throws FileNotFoundException {
+    // TODO: Optimization to be done, get all files and hashes first, put into hashmap, and then scan index and object folders and remove unchanged ones
+    // should bring amortorized time down by a factor of N.
+    public ArrayList<File> getChangedFiles() {
         String homeDir = System.getProperty("user.dir"); // This is the directory user is running the commands from
         File file = new File(homeDir);
-        return getChangedFiles(file);
+        try {
+            return getChangedFiles(file);
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
     /**
@@ -54,12 +62,14 @@ public class Status {
 
         return hasFileChangedInIndex(file, hash);
     }
+
     private boolean hasFileChangedInIndex(File file, String hash) {
         /*
          * Index file need to have form line
          * fileName | size | hash | timestamp(?)
          */
-        File index = new File("../.jit/index");
+        String homeDir = System.getProperty("user.dir"); // This is the directory user is running the commands from
+        File index = new File(homeDir + "/.jit/index");
         Scanner sc;
         try {
             sc = new Scanner(index);
@@ -84,7 +94,8 @@ public class Status {
     }
 
     private boolean hasFileChangedInObjects(File file, String hash) {
-        File objectFolder = new File("../.jit/objects");
+        String homeDir = System.getProperty("user.dir"); // This is the directory user is running the commands from
+        File objectFolder = new File(homeDir + "/.jit/objects");
         String topOfHash = hash.substring(0, 2);
         String bottomOfHash = hash.substring(2);
 
@@ -104,5 +115,14 @@ public class Status {
             }
         }
         return true;
+    }
+    public static void main(String[] args) {
+        Status status = new Status();
+        ArrayList<File> changedFiles = status.getChangedFiles();
+
+        System.out.println("Untracked changes in:");
+        for (File changedFile : changedFiles) {
+            System.out.println(changedFile.getName());
+        }
     }
 }

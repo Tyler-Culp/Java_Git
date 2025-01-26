@@ -1,4 +1,4 @@
-package CommitObjects;
+package JavaGit.CommitObjects;
 
 import java.io.File;
 import java.io.FileNotFoundException;

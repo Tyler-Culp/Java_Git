@@ -1,4 +1,4 @@
-package Commands;
+package JavaGit.Commands;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,5 +67,8 @@ public class Init {
             System.out.println("Failed to create refs directory.");
         }
     }
+    public static void main(String[] args) {
+        Init init = new Init();
+        init.createDirStructure();   
+    }
 }
-

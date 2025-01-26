@@ -1,4 +1,4 @@
-import Actions.Initiate;
+import Commands.Initiate;
 
 public class Run {
     public static void main(String[] args) {
