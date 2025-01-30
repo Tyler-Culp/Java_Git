@@ -26,7 +26,7 @@ public class Init {
 
         File indexFile = new File(currDir + "/index");
 
-        File headDir = new File(currDir + "/HEAD");
+        File headFile = new File(currDir + "/HEAD");
         File objectsDir = new File(currDir + "/objects");
         File refsDir = new File(currDir + "/refs");
 
@@ -36,22 +36,21 @@ public class Init {
                 System.out.println("index file created.");
             }
             else {
-                
+                System.out.println("index file failed to create.");
+            }
+            boolean createdHead = headFile.createNewFile();
+            if (createdHead) {
+                System.out.println("HEAD file created.");
+            }
+            else {
+                System.out.println("HEAD file failed to create.");
             }
         } catch (IOException e) {
             System.out.println("index file failed to be created due to an IO Exception");
             System.out.println(e);
         }
-        boolean createdHead = headDir.mkdir();
         boolean createdObjects = objectsDir.mkdir();
         boolean createdRefs = refsDir.mkdir();
-
-        if (createdHead) {
-            System.out.println("HEAD directory created.");
-        }
-        else {
-            System.out.println("Failed to create HEAD directory.");
-        }
 
         if (createdObjects) {
             System.out.println("objects directory created.");

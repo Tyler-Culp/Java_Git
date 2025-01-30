@@ -39,7 +39,7 @@ public class Add {
         File index = new File(this.JitDirectory.getPath() + "/index");
         try (BufferedWriter outBuffer = new BufferedWriter(new FileWriter(index.getPath(), true));) {
             for (Blob blob : changedBlobs) {
-                outBuffer.write(blob.file.getName() + " | " + Long.toString(blob.fileSize) + " | " + blob.hash + "\n"); // add changed blob file to index
+                outBuffer.write(blob.file.getName() + " | " + Long.toString(blob.fileSize) + " | " + blob.hash + " | " + java.time.Instant.now().toString() + "\n"); // add changed blob file to index
                 // Get (and possibly create) the top two hash character directory
                 File hashFolder = new File(this.JitDirectory.getPath() + "/objects/" + blob.hash.substring(0, 2));
                 if (!hashFolder.isDirectory()) hashFolder.mkdirs(); // if top two of hash doesn't have a folder yet, make it
