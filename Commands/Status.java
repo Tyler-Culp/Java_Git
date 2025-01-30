@@ -4,7 +4,7 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import JavaGit.CommitObjects.Blob;
+import JavaGit.CommitObjects.*;
 import JavaGit.Helpers.*;
 
 public class Status {

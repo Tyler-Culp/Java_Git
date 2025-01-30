@@ -5,6 +5,7 @@ import java.util.zip.DeflaterOutputStream;
 
 import JavaGit.Commands.Status;
 import JavaGit.CommitObjects.Blob;
+import JavaGit.CommitObjects.CommitObject;
 import JavaGit.Helpers.*;
 
 public class Add {
@@ -31,50 +32,18 @@ public class Add {
          * Index file need to have form line
          * fileName | size | hash | timestamp(?)
          */
-        ArrayList<Blob> changedBlobs = this.statusTracker.getChangedFiles();
+        ArrayList<Blob> changedObjs = this.statusTracker.getChangedFiles();
         if (this.JitDirectory == null) {
             System.out.println("Unable to find .jit folder, have you run init?");
             return false;
         }
-        File index = new File(this.JitDirectory.getPath() + "/index");
-        try (BufferedWriter outBuffer = new BufferedWriter(new FileWriter(index.getPath(), true));) {
-            for (Blob blob : changedBlobs) {
-                outBuffer.write(blob.file.getName() + " | " + Long.toString(blob.fileSize) + " | " + blob.hash + " | " + java.time.Instant.now().toString() + "\n"); // add changed blob file to index
-                // Get (and possibly create) the top two hash character directory
-                File hashFolder = new File(this.JitDirectory.getPath() + "/objects/" + blob.hash.substring(0, 2));
-                if (!hashFolder.isDirectory()) hashFolder.mkdirs(); // if top two of hash doesn't have a folder yet, make it
-                // Create and open the soon to be compressed file with the bottom 38 of the hash as its name
-                File compressedFile = new File(hashFolder.getPath() + "/" + blob.hash.substring(2, blob.hash.length()));
-                compressedFile.createNewFile();
+        File indexFile = new File(this.JitDirectory.getPath() + "/index");
+        File objectsFolder = new File(this.JitDirectory.getPath() + "/objects");
 
-                // Doing try block like this *should* close the streams once it ends
-                try 
-                (
-                    FileInputStream fis = new FileInputStream(blob.file);
-                    FileOutputStream fos = new FileOutputStream(compressedFile);
-                    DeflaterOutputStream dos = new DeflaterOutputStream(fos);
-                ) {
-                    int data = fis.read();
-                    while (data != -1) {
-                        dos.write(data);
-                        data = fis.read();
-                    }
-                }
-                catch (IOException e) {
-                    System.out.println("Error occured when creating compressed file in objects");
-                    System.out.println(e);
-                    return false;
-                }
-            }
+        for (Blob obj : changedObjs) {
+            if (!obj.addToIndex(indexFile)) System.out.println("Couldn't add " + obj.file.getName() + " to index file");
+            if (!obj.addToObjectsFolder(objectsFolder, obj.objectString)) System.out.println("Couldn't add " + obj.file.getName() + " to objects folder");
         }
-        catch (IOException e) {
-            System.out.println("Error occured when trying to write to index file");
-            System.out.println(e);
-            return false;
-        }
-
-        // Two things need to be checked for, if the file needs to be overwritten in index
-        // or if it is a completely new object
         return true;
     }
 }

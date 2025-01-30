@@ -2,6 +2,7 @@ package JavaGit.Commands;
 
 import java.io.File;
 import java.io.IOException;
+import JavaGit.Helpers.*;
 
 /**
  * To create the necessary folder system necessary for a git command tool
@@ -11,6 +12,12 @@ public class Init {
     String homeDir = System.getProperty("user.dir");
 
     public void createDirStructure() {
+        File jitFolder = new FindJit().find();
+
+        if (jitFolder.exists()) {
+            System.out.println("This project alread has a jit folder");
+            return;
+        }
         String currDir = this.homeDir;
         File hidderDir = new File(currDir + "/.jit");
         

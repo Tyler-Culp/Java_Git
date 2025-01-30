@@ -15,9 +15,9 @@ public class Main {
                 initializer.createDirStructure();
             case "status":
                 Status status = new Status();
-                ArrayList<Blob> changedBlobs = status.getChangedFiles();
-                for (Blob blob : changedBlobs) {
-                    System.out.println(blob.file.getName());
+                ArrayList<Blob> changedObjs = status.getChangedFiles();
+                for (Blob obj : changedObjs) {
+                    System.out.println(obj.file.getName());
                 }
                 break;
             case "add":
