@@ -5,7 +5,6 @@ import java.util.zip.DeflaterOutputStream;
 
 import JavaGit.Commands.Status;
 import JavaGit.CommitObjects.Blob;
-import JavaGit.CommitObjects.CommitObject;
 import JavaGit.Helpers.*;
 
 public class Add {
@@ -18,11 +17,25 @@ public class Add {
     }
 
     // Will try to implement this later, bit of an issue because .jit directory needs to be located
-    private boolean add(String fileName) { // Get users current path and try to add file from there
+    public boolean add(String fileName) { // Get users current path and try to add file from there
         String homeDir = System.getProperty("user.dir"); // This is the directory user is running the commands from
         File fileToAdd = new File(homeDir + "/" + fileName);
-        Blob blob = new Blob(fileToAdd);
-        return false;
+        return add(fileToAdd);
+    }
+
+    /*
+     * Recursive function for adding files. If given a directory traverse the changed child files
+     * If it is not a directory then just add the file (if it has actually been changed)
+     */
+    private boolean add(File file) {
+        ArrayList<Blob> changedObjs = this.statusTracker.getChangedFiles(file);
+        File indexFile = new File(this.JitDirectory.getPath() + "/index");
+        File objectsFolder = new File(this.JitDirectory.getPath() + "/objects");
+        for (Blob obj : changedObjs) {
+            if (!obj.addToIndex(indexFile)) System.out.println("Couldn't add " + obj.file.getName() + " to index file");
+            if (!obj.addToObjectsFolder(objectsFolder, obj.objectString)) System.out.println("Couldn't add " + obj.file.getName() + " to objects folder");
+        }
+        return true;
     }
 
 
@@ -32,7 +45,8 @@ public class Add {
          * Index file need to have form line
          * fileName | size | hash | timestamp(?)
          */
-        ArrayList<Blob> changedObjs = this.statusTracker.getChangedFiles();
+        File homeDir = new File(System.getProperty("user.dir"));
+        ArrayList<Blob> changedObjs = this.statusTracker.getChangedFiles(homeDir);
         if (this.JitDirectory == null) {
             System.out.println("Unable to find .jit folder, have you run init?");
             return false;

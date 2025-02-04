@@ -5,9 +5,7 @@ import java.util.Scanner;
 
 
 public class Blob extends CommitObject{
-    public File file;
     public String objectString;
-    public String hash;
     public Blob(File file) {
         this.file = file;
         this.objectString = createFileString(this.file);

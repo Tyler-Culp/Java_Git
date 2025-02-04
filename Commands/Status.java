@@ -9,50 +9,66 @@ import JavaGit.Helpers.*;
 
 public class Status {
     private File JitDirectory;
+    private File indexFile;
+    private File objectsFolder;
     public Status() {
         FindJit finder = new FindJit();
         this.JitDirectory = finder.find();
+        if (this.JitDirectory.exists()) {
+            String jitPath = this.JitDirectory.getPath();
+            this.indexFile = new File(jitPath + "/index");
+            this.objectsFolder = new File(jitPath + "/objects");
+        }
     }
-
-
+    public void printChangedFiles(ArrayList<Blob> files) {
+        if (files.size() <= 0) {
+            System.out.println("Clean working directory");
+            return;
+        }
+        String currWorkingDir = System.getProperty("user.dir");
+        int currWorkDirLength = currWorkingDir.length() + 1; // Add 1 to remove leading / in dir structure
+        System.out.println("Changed files:");
+        for (Blob blob : files) {
+            String filePath = blob.file.getPath().substring(currWorkDirLength, blob.file.getPath().length());
+            System.out.println(filePath);
+        }
+    }
     // TODO: Optimization to be done, get all files and hashes first, put into hashmap, and then scan index and object folders and remove unchanged ones
     // should bring amortorized time down by a factor of N.
     public ArrayList<Blob> getChangedFiles() {
         String homeDir = System.getProperty("user.dir"); // This is the directory user is running the commands from
         File file = new File(homeDir);
-        try {
-            return getChangedFiles(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
+        return getChangedFiles(file);
     }
 
     /**
-     * @param topLevelDir - The top level directory (full path) of the project you want to track
+     * @param currFile - The top level directory (full path) of the project you want to track
      * @return A list of files which have changed
      * @throws FileNotFoundException 
      * 
      * A recursive function starting at the top level of project it is tracking
+     * TODO: Need to check for things like deleted files as well and remove them from index if they are deleted
      */
-    private ArrayList<Blob> getChangedFiles(File topLevelDir) throws FileNotFoundException {
+    public ArrayList<Blob> getChangedFiles(File currFile) {
+        // TODO: Create some object or function or something with a list of names to be ignored
+        if (currFile.getName().equals(".jit") || currFile.getName().equals(".git") || currFile.getName().equals("JavaGit")) return new ArrayList<Blob>();
         ArrayList<Blob> changedFiles = new ArrayList<>(); // List to store all the changed files
-        File[] childFiles = topLevelDir.listFiles();
-
-        if (childFiles != null && childFiles.length > 0) {
-            for (File file : childFiles) {
-                // Can check gitignore here maybe to see what should be skipped
-                // TODO: Create some object or function or something with a list of names to be ignored
-                if (file.getName().equals(".jit") || file.getName().equals(".git") || file.getName().equals("JavaGit")) continue; // don't want to track the actual .jit folder (this would be a loop)
-                else if (file.isDirectory()) { // Need to also check if the directory itself is a new things I think, should track with a tree object
-                    changedFiles.addAll(getChangedFiles(file));
+        if (currFile.isDirectory()) {
+            File[] childFiles = currFile.listFiles();
+            for (File child : childFiles) {
+                changedFiles.addAll(getChangedFiles(child));
+            }
+        }
+        else {
+            Blob blob = new Blob(currFile);
+            try {
+                if (hasFileChanged(blob)) {
+                    changedFiles.add(blob);
                 }
-                else {
-                    Blob blob = new Blob(file);
-                    if (hasFileChanged(blob)) {
-                        changedFiles.add(blob);
-                    }
-                }
+            }
+            catch (FileNotFoundException e) {
+                System.out.println("File not found exception for " + blob.file.getName());
+                System.out.println(e);
             }
         }
         return changedFiles;
@@ -81,14 +97,13 @@ public class Status {
          * Index file need to have form line
          * fileName | size | hash | timestamp(?)
          */
-        if (this.JitDirectory == null) {
-            System.out.println("Can not find jit folder to check index file");
+        if (!this.indexFile.exists()) {
+            System.out.println("Can not find index file");
             return false;
         }
-        File index = new File(this.JitDirectory.getPath() + "/index");
         Scanner sc;
         try {
-            sc = new Scanner(index);
+            sc = new Scanner(this.indexFile);
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 if (line.contains(blob.file.getName())) { // currently tracking in index file
@@ -110,15 +125,14 @@ public class Status {
     }
 
     private boolean hasFileChangedInObjects(String hash) {
-        if (this.JitDirectory == null) {
-            System.out.println("Can not find jit folder to check objects folder");
+        if (!this.objectsFolder.exists()) {
+            System.out.println("Can not find objects folder");
             return false;
         }
-        File objectFolder = new File(this.JitDirectory.getPath() + "/objects");
         String topOfHash = hash.substring(0, 2);
         String bottomOfHash = hash.substring(2);
 
-        File[] objectFolderFiles = objectFolder.listFiles();
+        File[] objectFolderFiles = this.objectsFolder.listFiles();
 
         // Need to check if file hash matches any we currently are tracking in objects
         // Because of the way git tracks object with front two part of hash being parent folder means nested loop is needed

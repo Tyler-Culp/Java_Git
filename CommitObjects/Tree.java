@@ -12,8 +12,6 @@ public class Tree extends CommitObject {
      * If we see a blob then we just find its hash and add it to a string to write to a File
      * If we see a directory then we are in trouble because to get its hash we need to recursively do the same this on it
      */
-    public File file;
-    public String hash;
     public File jitFolder;
     public File objectsFolder;
 
