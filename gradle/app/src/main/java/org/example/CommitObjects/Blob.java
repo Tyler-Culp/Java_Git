@@ -1,10 +1,10 @@
-package JavaGit.CommitObjects;
+package org.example.CommitObjects;
 
 import java.io.*;
 import java.util.Scanner;
 
 
-public class Blob extends CommitObject{
+public class Blob extends AbstractJitObject{
     public String objectString;
     public Blob(File file) {
         this.file = file;

@@ -1,8 +1,9 @@
-package JavaGit.Commands;
+package org.example.Commands;
 
 import java.io.File;
 import java.io.IOException;
-import JavaGit.Helpers.*;
+
+import org.example.Helpers.*;
 
 /**
  * To create the necessary folder system necessary for a git command tool

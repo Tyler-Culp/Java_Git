@@ -1,11 +1,11 @@
-package JavaGit.Commands;
+package org.example.Commands;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import JavaGit.CommitObjects.*;
-import JavaGit.Helpers.*;
+import org.example.CommitObjects.*;
+import org.example.Helpers.*;
 
 public class Status {
     private File JitDirectory;

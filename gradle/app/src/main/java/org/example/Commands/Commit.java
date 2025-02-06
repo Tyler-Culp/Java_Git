@@ -1,5 +1,5 @@
-package JavaGit.Commands;
-import JavaGit.Commands.Status;
+package org.example.Commands;
+import org.example.Commands.Status;
 
 public class Commit {
     Status statusTracker;

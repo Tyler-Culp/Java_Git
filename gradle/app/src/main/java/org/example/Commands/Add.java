@@ -1,11 +1,11 @@
-package JavaGit.Commands;
+package org.example.Commands;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.zip.DeflaterOutputStream;
 
-import JavaGit.Commands.Status;
-import JavaGit.CommitObjects.Blob;
-import JavaGit.Helpers.*;
+import org.example.Commands.Status;
+import org.example.CommitObjects.Blob;
+import org.example.Helpers.*;
 
 public class Add {
     private Status statusTracker;
@@ -19,6 +19,7 @@ public class Add {
     // Will try to implement this later, bit of an issue because .jit directory needs to be located
     public boolean add(String fileName) { // Get users current path and try to add file from there
         String homeDir = System.getProperty("user.dir"); // This is the directory user is running the commands from
+        // TODO: Possible edge case to look into for if user gives a fileName like "../../../.." that goes outside .jit folder
         File fileToAdd = new File(homeDir + "/" + fileName);
         return add(fileToAdd);
     }

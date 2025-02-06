@@ -1,4 +1,4 @@
-package JavaGit.Helpers;
+package org.example.Helpers;
 import java.io.File;
 
 public class FindJit {

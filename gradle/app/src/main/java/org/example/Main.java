@@ -1,8 +1,8 @@
-package JavaGit;
+package org.example;
 
-import JavaGit.Helpers.FindJit;
-import JavaGit.CommitObjects.*;
-import JavaGit.Commands.*;
+import org.example.Commands.*;
+import org.example.CommitObjects.*;
+import org.example.Helpers.*;
 
 import java.io.File;
 import java.util.ArrayList;

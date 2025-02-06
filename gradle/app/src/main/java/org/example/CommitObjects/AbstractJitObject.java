@@ -1,8 +1,7 @@
-package JavaGit.CommitObjects;
+package org.example.CommitObjects;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,7 +10,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.zip.DeflaterOutputStream;
 
-public abstract class CommitObject {
+public abstract class AbstractJitObject {
     public File file;
     public String hash;
     String hash(String toHash) {
