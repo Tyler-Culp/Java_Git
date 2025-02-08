@@ -10,10 +10,12 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         if (args.length <= 0) return; 
+        String userDir = System.getProperty("user.dir");
+        File jitFolder = new FindJit().find(userDir);
         String givenCommand = args[0];
         switch (givenCommand) {
             case "init":
-                Init initializer = new Init();
+                Init initializer = new Init(userDir, jitFolder);
                 initializer.createDirStructure();
                 break;
             case "status":
@@ -40,10 +42,9 @@ public class Main {
                 break;
             case "FindJit":
                 FindJit finder = new FindJit();
-                System.out.println("Found .jit in " + finder.find().getName());
+                System.out.println("Found .jit in " + finder.find(userDir).getName());
                 break;
             case "test":
-                String userDir = System.getProperty("user.dir");
                 System.out.println(System.getProperty("user.dir"));
 
                 File file = new File(userDir + "/.");

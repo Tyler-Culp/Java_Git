@@ -13,7 +13,7 @@ public class Status {
     private File objectsFolder;
     public Status() {
         FindJit finder = new FindJit();
-        this.JitDirectory = finder.find();
+        this.JitDirectory = finder.find(System.getProperty("user.dir"));
         if (this.JitDirectory.exists()) {
             String jitPath = this.JitDirectory.getPath();
             this.indexFile = new File(jitPath + "/index");

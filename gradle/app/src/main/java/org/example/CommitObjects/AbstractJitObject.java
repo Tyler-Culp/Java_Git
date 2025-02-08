@@ -1,7 +1,9 @@
 package org.example.CommitObjects;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,6 +11,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.zip.DeflaterOutputStream;
+import java.util.zip.InflaterInputStream;
 
 public abstract class AbstractJitObject {
     public File file;
@@ -71,7 +74,7 @@ public abstract class AbstractJitObject {
             }
             catch (IOException e) {
                 System.out.println("Error occured when creating compressed file in objects");
-                System.out.println(e);
+                e.printStackTrace();
                 return false;
             }
             return true;
@@ -83,9 +86,30 @@ public abstract class AbstractJitObject {
         }
         catch (IOException e) {
             System.out.println("Error occured when trying to write " + this.file.getName() + " to index file");
-            System.out.println(e);
+            e.printStackTrace();
             return false;
         }
         return true;
+    }
+
+    public static String readFileFromObjects(File toRead) {
+        try 
+        (
+            FileInputStream fis = new FileInputStream(toRead);
+            InflaterInputStream iis = new InflaterInputStream(fis);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        ) {
+            int data = iis.read();
+            while (data != -1) {
+                bos.write(data);
+            }
+            return bos.toString();
+        }
+        catch (IOException e) {
+            System.out.println("Error occured when reading compressed file" + toRead.getName() + "in objects");
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -20,6 +20,10 @@ dependencies {
     // Use JUnit Jupiter for testing.
     testImplementation(libs.junit.jupiter)
 
+    // Add mockito for mocking classes
+    testImplementation("org.mockito:mockito-core:5.+")
+    testImplementation("org.mockito:mockito-inline:5.+")
+
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     // This dependency is used by the application.
@@ -49,4 +53,8 @@ tasks.jar {
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+        showStandardStreams = true
+    }
 }

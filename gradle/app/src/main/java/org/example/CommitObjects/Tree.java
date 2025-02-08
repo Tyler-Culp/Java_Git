@@ -25,7 +25,7 @@ public class Tree extends AbstractJitObject {
     // Need to recursively go through a bunch of trees before getting to root
     // At the bottom we create a tree object, save its hash and use it to make
     // next level tree object
-    static File jitFolder = new FindJit().find();
+    static File jitFolder = new FindJit().find(System.getProperty("user.dir"));
     static File objectsFolder = new File(jitFolder.getPath() + "/objects");
     static File indexFile = new File(jitFolder.getPath() + "index");
     static Map<String, String> stagedFiles = getIndexFiles();
@@ -45,16 +45,16 @@ public class Tree extends AbstractJitObject {
     }
 
     /**
-     * 
-     * @param rootFolder - The top level folder to create the tree from
-     * @return A Tree object containing references only to folders and files which have been staged
-     * 
      * A recursive function starting from the .jit projects root folder and creating a Tree object along the way.
      * Trees have a List of children (referring to files within the directory heirarchy). These children can be
      * Blobs (normal files which act as leaf nodes) or other Trees. All children in this tree are those which were staged
      * to be committed in the index file.
      * 
      * TODO: Need to be able to merge two tree objects so that newly created trees have the same unchanged references as the prev committed Tree
+     * 
+     * @param rootFolder - The top level folder to create the tree from
+     * @return A Tree object containing references only to folders and files which have been staged
+     * 
      */
     public static Tree createTree(File rootFolder) {
         Tree tree = new Tree(rootFolder);
@@ -100,6 +100,7 @@ public class Tree extends AbstractJitObject {
         return stagedFiles;
     }
 
+    // Refactoring this so that I create a tree object, and then get the hash based on that
     public String getRootHash(File jitFolder, File objectsFolder) {
         String jitFolderPath = jitFolder.getPath();
         int LENGTH_OF_WORD_JIT = 4;

@@ -10,14 +10,18 @@ import org.example.Helpers.*;
  */
 
 public class Init {
-    String homeDir = System.getProperty("user.dir");
+    String homeDir;
+    File jitFolder;
 
-    public void createDirStructure() {
-        File jitFolder = new FindJit().find();
+    public Init(String homeDir, File jitFolder) {
+        this.homeDir = homeDir;
+        this.jitFolder = jitFolder;
+    }
 
-        if (jitFolder.exists()) {
+    public boolean createDirStructure() {
+        if (this.jitFolder != null) {
             System.out.println("This project alread has a jit folder");
-            return;
+            return false;
         }
         String currDir = this.homeDir;
         File hidderDir = new File(currDir + "/.jit");
@@ -25,7 +29,7 @@ public class Init {
         boolean cretedHidden = hidderDir.mkdir();
         if (!cretedHidden) {
             System.out.println("Failed to create .jit");
-            return;
+            return false;
         }
         
         System.out.println("Created .jit");
@@ -38,15 +42,17 @@ public class Init {
         File objectsDir = new File(currDir + "/objects");
         File refsDir = new File(currDir + "/refs");
 
+        boolean createdIndex = false;
+        boolean createdHead = false;
         try {
-            boolean createdIndex = indexFile.createNewFile();
+            createdIndex = indexFile.createNewFile();
+            createdHead = headFile.createNewFile();
             if (createdIndex) {
                 System.out.println("index file created.");
             }
             else {
                 System.out.println("index file failed to create.");
             }
-            boolean createdHead = headFile.createNewFile();
             if (createdHead) {
                 System.out.println("HEAD file created.");
             }
@@ -73,9 +79,6 @@ public class Init {
         else{
             System.out.println("Failed to create refs directory.");
         }
-    }
-    public static void main(String[] args) {
-        Init init = new Init();
-        init.createDirStructure();   
+        return createdIndex && createdHead && createdObjects && createdRefs;
     }
 }

@@ -3,8 +3,7 @@ import java.io.File;
 
 public class FindJit {
     private static final int MAX_LEVELS = 10;
-    public File find() {
-        String homeDir = System.getProperty("user.dir"); // This is the directory user is running the commands from
+    public File find(String homeDir) {
         File homeFile = new File(homeDir);
 
         while (homeFile.exists()) {
@@ -24,18 +23,5 @@ public class FindJit {
         }
         System.out.println("Unable to find jit folder");
         return null;
-    }
-
-    
-    public static void main(String[] args) {
-        FindJit finder = new FindJit();
-        File jitFolder = finder.find();
-        if (jitFolder.isDirectory()) {
-            System.out.println("jit folder found");
-            System.out.println(jitFolder.getPath());
-        }
-        else {
-            System.out.println("jit folder not found");
-        }
     }
 }

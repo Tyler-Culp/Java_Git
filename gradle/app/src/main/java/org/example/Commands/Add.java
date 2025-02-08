@@ -13,7 +13,7 @@ public class Add {
     public Add() {
         this.statusTracker = new Status();
         FindJit finder = new FindJit();
-        this.JitDirectory = finder.find();
+        this.JitDirectory = finder.find(System.getProperty("user.dir"));
     }
 
     // Will try to implement this later, bit of an issue because .jit directory needs to be located
