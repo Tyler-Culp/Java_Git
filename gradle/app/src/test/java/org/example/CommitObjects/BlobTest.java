@@ -2,12 +2,11 @@ package org.example.CommitObjects;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 import java.io.File;
 
 class BlobTest {
-    File file = new File("src/test/resources/testFile.txt");
+    File file = new File("src/test/resources/ObjectTests/BlobTests/testFile.txt");
     @Test void canCreateBlob() {
         Blob blob = new Blob(file);
         assertEquals(file, blob.file);

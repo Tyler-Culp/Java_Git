@@ -15,7 +15,7 @@ public class Main {
         String givenCommand = args[0];
         switch (givenCommand) {
             case "init":
-                Init initializer = new Init(userDir, jitFolder);
+                Init initializer = new Init(userDir);
                 initializer.createDirStructure();
                 break;
             case "status":

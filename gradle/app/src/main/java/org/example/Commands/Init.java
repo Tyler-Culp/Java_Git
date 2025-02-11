@@ -11,17 +11,25 @@ import org.example.Helpers.*;
 
 public class Init {
     String homeDir;
-    File jitFolder;
+    File homeDirFile;
 
-    public Init(String homeDir, File jitFolder) {
+    public Init(String homeDir) {
         this.homeDir = homeDir;
-        this.jitFolder = jitFolder;
+        this.homeDirFile = new File(homeDir);
     }
 
     public boolean createDirStructure() {
-        if (this.jitFolder != null) {
-            System.out.println("This project alread has a jit folder");
+        if (!this.homeDirFile.exists()) {
+            System.out.println("Error: home directory init called from did not exist (some kind of bug)");
             return false;
+        }
+
+        File[] childrenFiles = this.homeDirFile.listFiles();
+        for (File child : childrenFiles) {
+            if (child.getName() == ".jit") {
+                System.out.println("This project alread has a jit folder");
+                return false;
+            }
         }
         String currDir = this.homeDir;
         File hidderDir = new File(currDir + "/.jit");
