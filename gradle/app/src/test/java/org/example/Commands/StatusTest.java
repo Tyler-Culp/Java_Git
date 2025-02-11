@@ -1,34 +1,91 @@
 package org.example.Commands;
 
-import org.example.Commands.Status;
-
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.api.TestMethodOrder;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 import org.example.Commands.*;
+import org.example.CommitObjects.*;
+import org.example.CleanUp;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class StatusTest {
-    String homeDir = "src/test/resources/CommandTests/StatusTest/";
-    File homeFolder = new File(homeDir);
-    Init init = new Init();
+    static String homeDir = "src/test/resources/CommandTests/StatusTest/";
+    static File homeFolder = new File(homeDir);
+    static Init init = new Init(homeDir);
     File jitFolder = new File(homeDir + "/.jit");
-    init.createDirStructure(homeDir);
-    @Test @Order1 void noChangesToReport() {
-        Status status = new Status(jitFolder);
-        status.
+    Status status = new Status(jitFolder);
+
+    @BeforeAll
+    static void setUp() {
+        init.createDirStructure();
+    }
+
+    @Test 
+    @Order(1) 
+    void noChangesToReport() {
+        ArrayList<Blob> lst = status.getChangedFiles(homeFolder);
+
+        assertEquals(new ArrayList<Blob>(), lst);
 
     }
-    @Test @Order2 void addedFilesToReport() {
+    @Order(2)
+    @Test void addedFilesToReport() {
+        File groceries = new File(homeDir + "/groceries.txt");
+        try {
+            groceries.createNewFile();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        ArrayList<Blob> lst = status.getChangedFiles(homeFolder);
+        Blob blob = new Blob(groceries);
+        List<Blob> expected = new ArrayList<>();
+        expected.add(blob);
+
+        System.out.println(expected);
+        System.out.println(lst);
+
+        assertEquals(expected, lst);
+    }
+    @Test
+    @Order(3)
+    void multipleFilesToReport() {
+        File stars = new File(homeDir + "/stars.txt");
+        File sports = new File(homeDir + "/sports.txt");
+        File groceries = new File(homeDir + "/groceries.txt");
+
+        try {
+            stars.createNewFile();
+            sports.createNewFile();
+            groceries.createNewFile();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<Blob> lst = status.getChangedFiles(homeFolder);
+        List<Blob> expected = new ArrayList<>();
+        expected.add(new Blob(groceries));
+        expected.add(new Blob(stars));
+        expected.add(new Blob(sports));
+
+        assertEquals(expected, lst);
+    }
+    @Test void deletedFilesToReport() {
 
     }
-    @Test @Order3 void modifiedFilesToReport() {
-
-    }
-    @Test @Order4 void deletedFilesToReport() {
-
+    @AfterAll static void clean() {
+        CleanUp.cleanFolder(homeFolder);
     }
 }

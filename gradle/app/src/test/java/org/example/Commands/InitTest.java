@@ -4,15 +4,24 @@ import org.example.Commands.Init;
 import org.example.Helpers.FindJit;
 import org.example.CleanUp;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class InitTest {
-    String homeDir = "src/test/resources/CommandTests/InitTest/";
-    File homeFolder = new File(homeDir);
-    @Test void createNewFolder() {
+    static String homeDir = "src/test/resources/CommandTests/InitTest";
+    static File homeFolder = new File(homeDir);
+    
+    @Test 
+    @Order(1)
+    void createNewFolder() {
         File jitFolder = new File(homeDir + "/.jit");
         assert(homeFolder.exists());
         assert(!jitFolder.exists());
@@ -21,7 +30,11 @@ class InitTest {
         boolean initialized = init.createDirStructure();
 
         assert(initialized);
+    }
 
+    @Test
+    @Order(2)
+    void findJitFolder() {
         File foundJitFolder = new FindJit().find(homeDir);
         assertNotNull(foundJitFolder);
 
@@ -34,9 +47,9 @@ class InitTest {
         assert(indexFile.exists());
         assert(refsFolder.exists());
         assert(objectsFolder.exists());
+    }
 
-        CleanUp.cleanFolder(foundJitFolder);
-
-        assert(!new File(homeDir + "/.jit").exists());
+    @AfterAll static void cleanUp() {
+        CleanUp.cleanFolder(homeFolder);
     }
 }

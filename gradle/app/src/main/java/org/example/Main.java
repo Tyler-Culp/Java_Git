@@ -30,7 +30,7 @@ public class Main {
                 status.printChangedFiles(changedObjs);
                 break;
             case "add":
-                Add adder = new Add();
+                Add adder = new Add(jitFolder);
                 boolean success;
                 if (args.length == 2) {
                     String fileName = args[1];

@@ -1,4 +1,6 @@
 package org.example.Commands;
+import java.io.File;
+
 import org.example.Commands.Status;
 
 public class Commit {
