@@ -9,11 +9,10 @@ import org.example.Helpers.*;
 
 public class Add {
     private Status statusTracker;
-    private File JitDirectory;
-    public Add() {
-        this.statusTracker = new Status();
-        FindJit finder = new FindJit();
-        this.JitDirectory = finder.find(System.getProperty("user.dir"));
+    private File jitFolder;
+    public Add(File jitFolder) {
+        this.jitFolder = jitFolder;
+        this.statusTracker = new Status(jitFolder);
     }
 
     // Will try to implement this later, bit of an issue because .jit directory needs to be located
@@ -30,8 +29,8 @@ public class Add {
      */
     private boolean add(File file) {
         ArrayList<Blob> changedObjs = this.statusTracker.getChangedFiles(file);
-        File indexFile = new File(this.JitDirectory.getPath() + "/index");
-        File objectsFolder = new File(this.JitDirectory.getPath() + "/objects");
+        File indexFile = new File(this.jitFolder.getPath() + "/index");
+        File objectsFolder = new File(this.jitFolder.getPath() + "/objects");
         for (Blob obj : changedObjs) {
             if (!obj.addToIndex(indexFile)) System.out.println("Couldn't add " + obj.file.getName() + " to index file");
             if (!obj.addToObjectsFolder(objectsFolder, obj.objectString)) System.out.println("Couldn't add " + obj.file.getName() + " to objects folder");
@@ -48,12 +47,12 @@ public class Add {
          */
         File homeDir = new File(System.getProperty("user.dir"));
         ArrayList<Blob> changedObjs = this.statusTracker.getChangedFiles(homeDir);
-        if (this.JitDirectory == null) {
+        if (this.jitFolder == null) {
             System.out.println("Unable to find .jit folder, have you run init?");
             return false;
         }
-        File indexFile = new File(this.JitDirectory.getPath() + "/index");
-        File objectsFolder = new File(this.JitDirectory.getPath() + "/objects");
+        File indexFile = new File(this.jitFolder.getPath() + "/index");
+        File objectsFolder = new File(this.jitFolder.getPath() + "/objects");
 
         for (Blob obj : changedObjs) {
             if (!obj.addToIndex(indexFile)) System.out.println("Couldn't add " + obj.file.getName() + " to index file");

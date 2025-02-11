@@ -8,16 +8,14 @@ import org.example.CommitObjects.*;
 import org.example.Helpers.*;
 
 public class Status {
-    private File JitDirectory;
+    private File jitFolder;
     private File indexFile;
     private File objectsFolder;
-    public Status() {
-        FindJit finder = new FindJit();
-        this.JitDirectory = finder.find(System.getProperty("user.dir"));
-        if (this.JitDirectory.exists()) {
-            String jitPath = this.JitDirectory.getPath();
-            this.indexFile = new File(jitPath + "/index");
-            this.objectsFolder = new File(jitPath + "/objects");
+    public Status(File jitFolder) {
+        this.jitFolder = jitFolder;
+        if (this.jitFolder.exists()) {
+            this.indexFile = new File(jitFolder.getPath() + "/index");
+            this.objectsFolder = new File(jitFolder.getPath() + "/objects");
         }
     }
     public void printChangedFiles(ArrayList<Blob> files) {
@@ -37,6 +35,7 @@ public class Status {
     // should bring amortorized time down by a factor of N.
     public ArrayList<Blob> getChangedFiles() {
         String homeDir = System.getProperty("user.dir"); // This is the directory user is running the commands from
+        // TODO: Consider running it from jit directory location instead
         File file = new File(homeDir);
         return getChangedFiles(file);
     }
@@ -148,14 +147,5 @@ public class Status {
             }
         }
         return true;
-    }
-    public static void main(String[] args) {
-        Status status = new Status();
-        ArrayList<Blob> changedFiles = status.getChangedFiles();
-
-        System.out.println("Untracked changes in:");
-        for (Blob changedFile : changedFiles) {
-            System.out.println(changedFile.file.getName());
-        }
     }
 }

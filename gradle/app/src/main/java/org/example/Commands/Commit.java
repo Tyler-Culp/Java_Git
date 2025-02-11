@@ -3,7 +3,9 @@ import org.example.Commands.Status;
 
 public class Commit {
     Status statusTracker;
-    public Commit() {
-        this.statusTracker = new Status();
+    File jitFolder;
+    public Commit(File jitFolder) {
+        this.jitFolder = jitFolder;
+        this.statusTracker = new Status(jitFolder);
     }
 }

@@ -35,7 +35,7 @@ class InitTest {
         assert(refsFolder.exists());
         assert(objectsFolder.exists());
 
-        CleanUp.cleanUpJit(foundJitFolder);
+        CleanUp.cleanFolder(foundJitFolder);
 
         assert(!new File(homeDir + "/.jit").exists());
     }

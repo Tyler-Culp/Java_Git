@@ -10,16 +10,22 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         if (args.length <= 0) return; 
+
         String userDir = System.getProperty("user.dir");
+
         File jitFolder = new FindJit().find(userDir);
+        File indexFile = new File(jitFolder.getPath() + "/index");
+        File objectsFolder = new File(jitFolder.getPath() + "/objects");
+
         String givenCommand = args[0];
+
         switch (givenCommand) {
             case "init":
                 Init initializer = new Init(userDir);
                 initializer.createDirStructure();
                 break;
             case "status":
-                Status status = new Status();
+                Status status = new Status(jitFolder);
                 ArrayList<Blob> changedObjs = status.getChangedFiles();
                 status.printChangedFiles(changedObjs);
                 break;
