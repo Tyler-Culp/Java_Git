@@ -7,7 +7,6 @@ public class CleanUp {
         File[] children = file.listFiles();
         boolean success = true;
         for (File child : children) {
-            System.out.println(child);
             if (child.isDirectory()) {
                 success &= cleanFolder(child);
             }

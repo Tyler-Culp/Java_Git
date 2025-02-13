@@ -5,9 +5,14 @@ import java.util.Scanner;
 
 
 public class Blob extends AbstractJitObject{
-    public String objectString;
+    public Blob(String fileName, String hash) {
+        this.fileName = fileName;
+        this.hash = hash;
+    }
+
     public Blob(File file) {
         this.file = file;
+        this.fileName = file.getName();
         this.objectString = createFileString(this.file);
         this.hash = hash(this.objectString);
     }

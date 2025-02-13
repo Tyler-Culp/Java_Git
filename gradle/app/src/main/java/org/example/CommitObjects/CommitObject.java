@@ -11,7 +11,7 @@ public class CommitObject extends AbstractJitObject {
 
     public CommitObject(File jitFolder) {
         File rootDir = new File(jitFolder.getParent());
-        this.root = Tree.createTree(rootDir);
+        this.root = Tree.createTreeFromIndex(rootDir);
         this.prevCommit = getPrevCommit();
     }
 

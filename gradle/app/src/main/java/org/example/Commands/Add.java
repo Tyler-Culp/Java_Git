@@ -27,7 +27,7 @@ public class Add {
      * Recursive function for adding files. If given a directory traverse the changed child files
      * If it is not a directory then just add the file (if it has actually been changed)
      */
-    private boolean add(File file) {
+    public boolean add(File file) {
         ArrayList<Blob> changedObjs = this.statusTracker.getChangedFiles(file);
         File indexFile = new File(this.jitFolder.getPath() + "/index");
         File objectsFolder = new File(this.jitFolder.getPath() + "/objects");

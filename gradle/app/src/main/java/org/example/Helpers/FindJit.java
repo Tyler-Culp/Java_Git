@@ -3,6 +3,7 @@ import java.io.File;
 
 public class FindJit {
     private static final int MAX_LEVELS = 10;
+    
     public File find(String homeDir) {
         File homeFile = new File(homeDir);
 

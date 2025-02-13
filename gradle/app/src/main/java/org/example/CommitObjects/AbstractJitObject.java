@@ -1,4 +1,5 @@
 package org.example.CommitObjects;
+
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -16,7 +17,12 @@ import java.util.zip.InflaterInputStream;
 
 public abstract class AbstractJitObject {
     public File file;
+    public String fileName;
+    public String objectString;
     public String hash;
+
+    final static String DELIMINATER = "|";
+    final static String DELIMINATER_REGEX = "\\|";
     String hash(String toHash) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
@@ -43,6 +49,15 @@ public abstract class AbstractJitObject {
         }
     }
 
+    /**
+     * Important: Objects hash variable must be set before calling this function (TODO: Make it so you just include the has when calling function)
+     * Creates a new folder and file based on the first 2 and last 38 characters of Objects hash respectively. These uses a deflater stream
+     * to compress objectString and write it to new file in objects folder
+     * 
+     * @param objectsFolder - Reference to .jit's objects folder
+     * @param objectString - The string which we will be compressing and adding to the objects folder
+     * @return true if file was successfully created and written to, false otherwise
+     */
     public boolean addToObjectsFolder(File objectsFolder, String objectString) {
             /*
              * Index file need to have form line
@@ -81,9 +96,15 @@ public abstract class AbstractJitObject {
             return true;
     }
 
+    /**
+     * Important: Objects hash variable must be set before calling this function (TODO: Make it so you just include the has when calling function)
+     * 
+     * @param indexFile - A reference to .jit's index file
+     * @return true if new entry was successfully added to index file, false otherwise
+     */
     public boolean addToIndex(File indexFile) {
         try (BufferedWriter outBuffer = new BufferedWriter(new FileWriter(indexFile.getPath(), true));) {
-            outBuffer.write(this.file.getName() + " | " + Long.toString(this.file.length()) + " | " + this.hash + " | " + java.time.Instant.now().toString() + "\n"); // add changed blob file to index
+            outBuffer.write(this.file.getName() + DELIMINATER + Long.toString(this.file.length()) + DELIMINATER + this.hash + DELIMINATER + java.time.Instant.now().toString() + "\n"); // add changed blob file to index
         }
         catch (IOException e) {
             System.out.println("Error occured when trying to write " + this.file.getName() + " to index file");
@@ -104,11 +125,12 @@ public abstract class AbstractJitObject {
             int data = iis.read();
             while (data != -1) {
                 bos.write(data);
+                data = iis.read();
             }
             return bos.toString();
         }
         catch (IOException e) {
-            System.out.println("Error occured when reading compressed file" + toRead.getName() + "in objects");
+            System.out.println("Error occured when reading compressed file " + toRead.getName() + " in objects");
             e.printStackTrace();
             return null;
         }
