@@ -13,7 +13,7 @@ public class Status {
     private File jitFolder;
     private File indexFile;
     private File objectsFolder;
-    private Map<String, String> indexFileChanges = getIndexChanges();
+    // private Map<String, String> indexFileChanges = getIndexChanges();
     public Status(File jitFolder) {
         this.jitFolder = jitFolder;
         if (this.jitFolder.exists()) {
