@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.calls;
 
 import org.example.Commands.*;
 import org.example.CommitObjects.*;
@@ -26,7 +25,7 @@ public class AddTest {
     File indexFile = new File(homeDir + "/.jit/index");
     File objectsFolder = new File(homeDir + "/.jit/objects");
 
-    Status status = new Status(jitFolder);
+    Status status;
     Add add = new Add(jitFolder);
 
     @BeforeAll
@@ -38,6 +37,7 @@ public class AddTest {
     @Test
     @Order(1) 
     void addOneFile() {
+        status = new Status(jitFolder);
         File file1 = new File(homeDir + "/hi.txt");
         
         try {
@@ -72,6 +72,7 @@ public class AddTest {
     @Test
     @Order(2)
     void addMultipleFiles() {
+        status = new Status(jitFolder);
         File file1 = new File(homeDir + "/hi.txt");
         File file2 = new File(homeDir + "/bye.txt");
         File file3 = new File(homeDir + "/picture.png");
@@ -133,6 +134,7 @@ public class AddTest {
     @Test
     @Order(3)
     void writeToFileAndReadItt() {
+        status = new Status(jitFolder);
         File file1 = new File(homeDir + "/hi.txt");
 
         try {
@@ -167,6 +169,7 @@ public class AddTest {
     }
     @Test
     void checkRedundantAdds() {
+        status = new Status(jitFolder);
         File redundant = new File(homeDir + "/reduntant.txt");
 
         try {

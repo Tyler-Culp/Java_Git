@@ -25,7 +25,7 @@ public class TreeTest {
     File indexFile = new File(homeDir + "/.jit/index");
     File objectsFolder = new File(homeDir + "/.jit/objects");
 
-    Add add = new Add(jitFolder);
+    Add add;
     
     @BeforeAll
     static void setUp() {
@@ -35,6 +35,7 @@ public class TreeTest {
     @Test
     @Order(1)
     void makeATreeWithOneFile() {
+        add = new Add(jitFolder);
         File file1 = new File(homeDir + "/file1.txt");
 
         try {
@@ -68,6 +69,7 @@ public class TreeTest {
     @Test
     @Order(2)
     void testGetIndexFileOneEntry() {
+        add = new Add(jitFolder);
         File file1 = new File(homeDir + "/file1.txt");
 
         try {
@@ -102,6 +104,7 @@ public class TreeTest {
     @Test
     @Order(3)
     void testGetIndexFileMultipleEntries() {
+        add = new Add(jitFolder);
         // This is a bit flakey, doesn't work right for some reason when I don't reset homefolder beforehand
         File file1 = new File(homeDir + "/file1.txt");
         File file2 = new File(homeDir + "/file2.txt");

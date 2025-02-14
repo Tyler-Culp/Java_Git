@@ -1,6 +1,5 @@
 package org.example.Commands;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -24,7 +23,7 @@ public class StatusTest {
     static File homeFolder = new File(homeDir);
     static Init init = new Init(homeDir);
     File jitFolder = new File(homeDir + "/.jit");
-    Status status = new Status(jitFolder);
+    Status status;
 
     @BeforeAll
     static void setUp() {
@@ -35,6 +34,7 @@ public class StatusTest {
     @Test 
     @Order(1) 
     void noChangesToReport() {
+        status = new Status(jitFolder);
         ArrayList<Blob> lst = status.getChangedFiles(homeFolder);
 
         assertEquals(new ArrayList<Blob>(), lst);
@@ -42,6 +42,7 @@ public class StatusTest {
     }
     @Order(2)
     @Test void addedFilesToReport() {
+        status = new Status(jitFolder);
         File groceries = new File(homeDir + "/groceries.txt");
         try {
             groceries.createNewFile();
@@ -63,6 +64,7 @@ public class StatusTest {
     @Test
     @Order(3)
     void multipleFilesToReport() {
+        status = new Status(jitFolder);
         File stars = new File(homeDir + "/stars.txt");
         File sports = new File(homeDir + "/sports.txt");
         File groceries = new File(homeDir + "/groceries.txt");
@@ -88,6 +90,7 @@ public class StatusTest {
     @Test
     @Order(4)
     void addFilesThenChangeTest() {
+        status = new Status(jitFolder);
         File stars = new File(homeDir + "/stars.txt");
         File sports = new File(homeDir + "/sports.txt");
         File groceries = new File(homeDir + "/groceries.txt");

@@ -7,18 +7,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.example.CommitObjects.*;
-import org.example.Helpers.*;
 
 public class Status {
     private File jitFolder;
     private File indexFile;
     private File objectsFolder;
-    // private Map<String, String> indexFileChanges = getIndexChanges();
+    private Map<String, String> indexFileChanges;
     public Status(File jitFolder) {
         this.jitFolder = jitFolder;
         if (this.jitFolder.exists()) {
             this.indexFile = new File(jitFolder.getPath() + "/index");
             this.objectsFolder = new File(jitFolder.getPath() + "/objects");
+            this.indexFileChanges = getIndexChanges();
         }
     }
     public void printChangedFiles(ArrayList<Blob> files) {
@@ -99,31 +99,33 @@ public class Status {
          * Index file need to have form line
          * fileName | size | hash | timestamp(?)
          */
-        if (!this.indexFile.exists()) {
-            System.out.println("Can not find index file");
-            return false;
-        }
-        Scanner sc;
-        try {
-            sc = new Scanner(this.indexFile);
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
-                if (line.contains(blob.file.getName())) { // currently tracking in index file
-                    sc.close();
-                    if (line.contains(blob.hash)) { // Hash is same so file is unchanged
-                        return false;
-                    }
-                    else { // Hash is different so file is different
-                        return true;
-                    }
-                }
-            }
-            sc.close();
-            return true;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
-        }
+
+        return !this.indexFileChanges.containsKey(blob.fileName) || !this.indexFileChanges.get(blob.fileName).equals(blob.hash);
+        // if (!this.indexFile.exists()) {
+        //     System.out.println("Can not find index file");
+        //     return false;
+        // }
+        // Scanner sc;
+        // try {
+        //     sc = new Scanner(this.indexFile);
+        //     while (sc.hasNextLine()) {
+        //         String line = sc.nextLine();
+        //         if (line.contains(blob.file.getName())) { // currently tracking in index file
+        //             sc.close();
+        //             if (line.contains(blob.hash)) { // Hash is same so file is unchanged
+        //                 return false;
+        //             }
+        //             else { // Hash is different so file is different
+        //                 return true;
+        //             }
+        //         }
+        //     }
+        //     sc.close();
+        //     return true;
+        // } catch (FileNotFoundException e) {
+        //     e.printStackTrace();
+        //     return false;
+        // }
     }
 
     private boolean hasFileChangedInObjects(String hash) {
@@ -157,12 +159,14 @@ public class Status {
         try (
             Scanner sc = new Scanner(this.indexFile);
         ) {
-            String line = sc.nextLine();
-            String[] data = line.split("\\|");
-            String fileName = data[0];
-            String fileHash = data[2];
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                String[] data = line.split("\\|");
+                String fileName = data[0];
+                String fileHash = data[2];
 
-            fileNameToHash.put(fileName, fileHash);
+                fileNameToHash.put(fileName, fileHash);
+            }
         }
         catch (Exception e) {
             e.printStackTrace();
