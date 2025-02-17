@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.example.Commands.InitTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-02-17T03:31:50" hostname="Tylers-MacBook.local" time="0.009">
+  <properties/>
+  <testcase name="createNewFolder()" classname="org.example.Commands.InitTest" time="0.004"/>
+  <testcase name="findJitFolder()" classname="org.example.Commands.InitTest" time="0.004"/>
+  <system-out><![CDATA[Created .jit
+index file created.
+HEAD file created.
+objects directory created.
+refs directory created.
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
