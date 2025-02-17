@@ -35,65 +35,39 @@ public class StatusTest {
         init.createDirStructure();
     }
 
-    // @Test 
-    // @Order(1) 
-    // void noChangesToReport() {
-    //     status = new Status(jitFolder);
-    //     ArrayList<Blob> lst = status.getChangedFiles(homeFolder);
+    @Test 
+    @Order(1) 
+    void noChangesToReport() {
+        status = new Status(jitFolder);
+        ArrayList<Blob> lst = status.getChangedFiles(homeFolder);
 
-    //     assertEquals(new ArrayList<Blob>(), lst);
+        assertEquals(new ArrayList<Blob>(), lst);
 
-    // }
-    // @Order(2)
-    // @Test void addedFilesToReport() {
-    //     status = new Status(jitFolder);
-    //     File groceries = new File(homeDir + "/groceries.txt");
-    //     try {
-    //         groceries.createNewFile();
-    //     }
-    //     catch (IOException e) {
-    //         e.printStackTrace();
-    //     }
+    }
+    @Order(2)
+    @Test void addedFilesToReport() {
+        status = new Status(jitFolder);
+        File groceries = new File(homeDir + "/groceries.txt");
+        try {
+            groceries.createNewFile();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
         
-    //     ArrayList<Blob> lst = status.getChangedFiles(homeFolder);
-    //     Blob blob = new Blob(groceries);
-    //     List<Blob> expected = new ArrayList<>();
-    //     expected.add(blob);
+        ArrayList<Blob> lst = status.getChangedFiles(homeFolder);
+        Blob blob = new Blob(groceries);
+        List<Blob> expected = new ArrayList<>();
+        expected.add(blob);
 
-    //     System.out.println(expected);
-    //     System.out.println(lst);
+        System.out.println(expected);
+        System.out.println(lst);
 
-    //     assertEquals(expected, lst);
-    // }
-    // @Test
-    // @Order(3)
-    // void multipleFilesToReport() {
-    //     status = new Status(jitFolder);
-    //     File stars = new File(homeDir + "/stars.txt");
-    //     File sports = new File(homeDir + "/sports.txt");
-    //     File groceries = new File(homeDir + "/groceries.txt");
-
-    //     try {
-    //         stars.createNewFile();
-    //         sports.createNewFile();
-    //         groceries.createNewFile();
-    //     }
-    //     catch (IOException e) {
-    //         e.printStackTrace();
-    //     }
-
-    //     ArrayList<Blob> lst = status.getChangedFiles(homeFolder);
-    //     List<Blob> expected = new ArrayList<>();
-    //     expected.add(new Blob(groceries));
-    //     expected.add(new Blob(stars));
-    //     expected.add(new Blob(sports));
-
-    //     assertEquals(expected, lst);
-    // }
-
+        assertEquals(expected, lst);
+    }
     @Test
-    @Order(4)
-    void addFilesThenChangeTest() {
+    @Order(3)
+    void multipleFilesToReport() {
         status = new Status(jitFolder);
         File stars = new File(homeDir + "/stars.txt");
         File sports = new File(homeDir + "/sports.txt");
@@ -108,30 +82,56 @@ public class StatusTest {
             e.printStackTrace();
         }
 
-        Add adder = new Add(jitFolder);
-        adder.add(homeFolder);
         ArrayList<Blob> lst = status.getChangedFiles(homeFolder);
         List<Blob> expected = new ArrayList<>();
-
-        assertEquals(expected, lst);
-
-        try (
-            FileWriter fw1 = new FileWriter(sports);
-            FileWriter fw2 = new FileWriter(groceries);
-        ) {
-            fw1.write("baseball\nbasketball\nfootball");
-            fw2.write("bread\neggs\nmilk");
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        lst = status.getChangedFiles(homeFolder);
-
-        expected.add(new Blob(sports));
         expected.add(new Blob(groceries));
+        expected.add(new Blob(stars));
+        expected.add(new Blob(sports));
 
         assertEquals(expected, lst);
     }
+
+    // @Test
+    // @Order(4)
+    // void addFilesThenChangeTest() {
+    //     status = new Status(jitFolder);
+    //     File stars = new File(homeDir + "/stars.txt");
+    //     File sports = new File(homeDir + "/sports.txt");
+    //     File groceries = new File(homeDir + "/groceries.txt");
+
+    //     try {
+    //         stars.createNewFile();
+    //         sports.createNewFile();
+    //         groceries.createNewFile();
+    //     }
+    //     catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+
+    //     Add adder = new Add(jitFolder);
+    //     adder.add(homeFolder);
+    //     ArrayList<Blob> lst = status.getChangedFiles(homeFolder);
+    //     List<Blob> expected = new ArrayList<>();
+
+    //     assertEquals(expected, lst);
+
+    //     try (
+    //         FileWriter fw1 = new FileWriter(sports);
+    //         FileWriter fw2 = new FileWriter(groceries);
+    //     ) {
+    //         fw1.write("baseball\nbasketball\nfootball");
+    //         fw2.write("bread\neggs\nmilk");
+    //     }
+    //     catch (Exception e) {
+    //         e.printStackTrace();
+    //     }
+    //     lst = status.getChangedFiles(homeFolder);
+
+    //     expected.add(new Blob(sports));
+    //     expected.add(new Blob(groceries));
+
+    //     assertEquals(expected, lst);
+    // }
     @Test void deletedFilesToReport() {
 
     }
