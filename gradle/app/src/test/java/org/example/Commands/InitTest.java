@@ -18,6 +18,11 @@ import java.io.File;
 class InitTest {
     static String homeDir = "src/test/resources/CommandTests/InitTest";
     static File homeFolder = new File(homeDir);
+
+    @BeforeAll
+    static void setup() {
+        CleanUp.cleanFolder(homeFolder);
+    }
     
     @Test 
     @Order(1)
@@ -47,9 +52,5 @@ class InitTest {
         assert(indexFile.exists());
         assert(refsFolder.exists());
         assert(objectsFolder.exists());
-    }
-
-    @AfterAll static void cleanUp() {
-        CleanUp.cleanFolder(homeFolder);
     }
 }

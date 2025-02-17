@@ -3,7 +3,7 @@ name: Gradle Tests
 on:
   push:
     branches:
-      - main  # Adjust this based on your branch
+      - main  
   pull_request:
     branches:
       - main
@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '18'  # Change this to your required version
+          java-version: '18'  
           cache: 'gradle'
 
       - name: Grant execute permission for Gradle wrapper
