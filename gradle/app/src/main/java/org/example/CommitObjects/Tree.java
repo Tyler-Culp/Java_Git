@@ -107,7 +107,6 @@ public class Tree extends AbstractJitObject {
             e.printStackTrace();
             return null;
         }
-
     }
 
     /**
