@@ -3,4 +3,5 @@
 
 # Ignore Gradle build output directory
 build
-app/bin/test
+#Ignore tests from bin
+app/bin/test/*
