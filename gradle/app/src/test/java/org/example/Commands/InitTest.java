@@ -9,11 +9,14 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 
+@Execution(ExecutionMode.SAME_THREAD)  // Force single-thread execution
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class InitTest {
     static String homeDir = "src/test/resources/CommandTests/InitTest";

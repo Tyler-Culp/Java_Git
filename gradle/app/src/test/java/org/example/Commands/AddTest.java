@@ -5,6 +5,9 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.example.Commands.*;
@@ -15,6 +18,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+
+@Execution(ExecutionMode.SAME_THREAD)  // Force single-thread execution
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AddTest {
     static String homeDir = "src/test/resources/CommandTests/AddTest";
@@ -33,7 +38,7 @@ public class AddTest {
         CleanUp.cleanFolder(homeFolder);
         init.createDirStructure();
     }
-
+    
     @Test
     @Order(1) 
     void addOneFile() {

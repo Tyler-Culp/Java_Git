@@ -5,6 +5,9 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.example.Commands.*;
@@ -17,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Execution(ExecutionMode.SAME_THREAD)  // Force single-thread execution
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class StatusTest {
     static String homeDir = "src/test/resources/CommandTests/StatusTest";

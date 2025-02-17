@@ -14,7 +14,10 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
+@Execution(ExecutionMode.SAME_THREAD)  // Force single-thread execution
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TreeTest {
     static String homeDir = "src/test/resources/ObjectTests/TreeTests";
