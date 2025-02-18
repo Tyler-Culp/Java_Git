@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import org.example.CommitObjects.*;
 
 public class Status {
+    private static final String emptyFileHash = "086fdd7631d586d121a6192c5987834ac6cbf9f0";
     private File jitFolder;
     private File indexFile;
     private File objectsFolder;

@@ -1,6 +1,7 @@
 package org.example.Commands;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -29,8 +30,8 @@ public class StatusTest {
     File jitFolder = new File(homeDir + "/.jit");
     Status status;
 
-    @BeforeAll
-    static void setUp() {
+    @BeforeEach
+    void setUp() {
         CleanUp.cleanFolder(homeFolder);
         init.createDirStructure();
     }
@@ -89,6 +90,40 @@ public class StatusTest {
         expected.add(new Blob(sports));
 
         assertEquals(expected, lst);
+    }
+
+    @Test
+    @Order(4)
+    void addTheChangeTest() {
+        status = new Status(jitFolder);
+        File f1 = new File(homeDir + "/f1.txt");
+        File f2 = new File(homeDir + "/f2.txt");
+
+        try {
+            f1.createNewFile();
+            f2.createNewFile();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            assert(false);
+        }
+
+        Add adder = new Add(jitFolder);
+
+        ArrayList<Blob> expected = new ArrayList<>();
+        expected.add(new Blob(f1));
+        expected.add(new Blob(f2));
+
+        ArrayList<Blob> actual = status.getChangedFiles(homeFolder);
+
+        assertEquals(expected, actual);
+
+        adder.add(homeDir);
+
+        actual = status.getChangedFiles(homeFolder);
+        expected = new ArrayList<>();
+
+        assertEquals(expected, actual);
     }
 
     // @Test

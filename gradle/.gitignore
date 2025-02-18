@@ -8,4 +8,4 @@ build
 app/bin/test
 
 #Ignore tests from src
-app/src/test
+app/src/test/resources
