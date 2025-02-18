@@ -124,49 +124,25 @@ public class StatusTest {
         expected = new ArrayList<>();
 
         assertEquals(expected, actual);
+
+        try (
+            FileWriter fw1 = new FileWriter(f1);
+            FileWriter fw2 = new FileWriter(f2);
+        ) {
+            fw1.write("Changes to file1 lol");
+            fw2.write("Changes to file2 uwu");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            assert(false);
+        }
+        actual = status.getChangedFiles(homeFolder);
+        expected.add(new Blob(f1));
+        expected.add(new Blob(f2));
+
+        assertEquals(expected, actual);
     }
-
-    // @Test
-    // @Order(4)
-    // void addFilesThenChangeTest() {
-    //     status = new Status(jitFolder);
-    //     File stars = new File(homeDir + "/stars.txt");
-    //     File sports = new File(homeDir + "/sports.txt");
-    //     File groceries = new File(homeDir + "/groceries.txt");
-
-    //     try {
-    //         stars.createNewFile();
-    //         sports.createNewFile();
-    //         groceries.createNewFile();
-    //     }
-    //     catch (IOException e) {
-    //         e.printStackTrace();
-    //     }
-
-    //     Add adder = new Add(jitFolder);
-    //     adder.add(homeFolder);
-    //     ArrayList<Blob> lst = status.getChangedFiles(homeFolder);
-    //     List<Blob> expected = new ArrayList<>();
-
-    //     assertEquals(expected, lst);
-
-    //     try (
-    //         FileWriter fw1 = new FileWriter(sports);
-    //         FileWriter fw2 = new FileWriter(groceries);
-    //     ) {
-    //         fw1.write("baseball\nbasketball\nfootball");
-    //         fw2.write("bread\neggs\nmilk");
-    //     }
-    //     catch (Exception e) {
-    //         e.printStackTrace();
-    //     }
-    //     lst = status.getChangedFiles(homeFolder);
-
-    //     expected.add(new Blob(sports));
-    //     expected.add(new Blob(groceries));
-
-    //     assertEquals(expected, lst);
-    // }
+    
     @Test void deletedFilesToReport() {
 
     }
