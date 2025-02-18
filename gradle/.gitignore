@@ -6,6 +6,3 @@ build
 
 #Ignore tests from bin
 app/bin/test
-
-#Ignore tests from src
-app/src/test/resources/
