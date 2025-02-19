@@ -50,17 +50,6 @@ public class Main {
                 FindJit finder = new FindJit();
                 System.out.println("Found .jit in " + finder.find(userDir).getName());
                 break;
-            case "test":
-                System.out.println(System.getProperty("user.dir"));
-
-                File file = new File(userDir + "/.");
-                File[] children = file.listFiles();
-
-                // File Object is able to figure out right folder when giving it . or ..
-                for (File child : children) {
-                    System.out.println(child.getName());
-                }
-                break;
             default:
                 System.out.println("Command line options:");
                 System.out.println("init - Create a new jit directory in current working directory");

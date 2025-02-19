@@ -153,19 +153,13 @@ public class Tree extends AbstractJitObject {
 
         for (AbstractJitObject child : children) {
             if (child instanceof Blob) { // If we are dealing with a blob
-                treeString.append("blob" + DELIMINATER + child.hash + DELIMINATER + child.fileName);
+                treeString.append("blob" + DELIMINATER + child.hash + DELIMINATER + child.fileName + "\n");
             }
             else if (child instanceof Tree) {
                 // Two possibilities, tree already has a hash (previously committed)
                 // Or tree has no hash and needs to be added to objects folder
-
-                if (child.hash != null) { // Case where prev tree already committed to objects folder
-                    treeString.append("tree" + DELIMINATER + child.hash + DELIMINATER + child.fileName); 
-                }
-                else {
-                    // Case where tree is different and a new tree needs to be added to objects folder
-                    treeString.append("tree" + DELIMINATER + getHash((Tree) child) + DELIMINATER + child.fileName);
-                }
+                child.hash = child.hash == null ? getHash((Tree) child) : child.hash;
+                treeString.append("tree" + DELIMINATER + child.hash + DELIMINATER + child.fileName + "\n"); 
             }
         }
         root.setObjectString(treeString.toString());
