@@ -1,5 +1,6 @@
 package org.example.CommitObjects;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
@@ -62,7 +63,7 @@ public class TreeTest {
 
         Tree tree = Tree.createTree();
 
-        assert(tree.children.size() == 1);
+        assertEquals(1, tree.getSize());
 
         String treeHash = Tree.getHash(tree);
         assertNotNull(treeHash);
@@ -108,7 +109,6 @@ public class TreeTest {
     @Order(3)
     void testGetIndexFileMultipleEntries() {
         add = new Add(jitFolder);
-        // This is a bit flakey, doesn't work right for some reason when I don't reset homefolder beforehand
         File file1 = new File(homeDir + "/file1.txt");
         File file2 = new File(homeDir + "/file2.txt");
 
@@ -137,5 +137,60 @@ public class TreeTest {
 
         assert(m.containsKey("file1.txt"));
         assert(m.containsKey("file2.txt"));
+    }
+
+    @Test
+    @Order(4)
+    void makeTreeWithSubFolders() {
+        add = new Add(jitFolder);
+        File file1 = new File(homeDir + "/file1.txt");
+        File file2 = new File(homeDir + "/file2.txt");
+
+        File folder1 = new File(homeDir + "/folder1");
+        File folder2 = new File(homeDir + "/folder2");
+
+        File nested1a = new File(folder1.getPath() + "/nested1a.txt");
+        File nested1b = new File(folder1.getPath() + "/nested1b.txt");
+
+        File nested2a = new File(folder2.getPath() + "/nested2a.txt");
+        File nested2b = new File(folder2.getPath() + "/nested2b.txt");
+
+        try {
+            file1.createNewFile();
+            file2.createNewFile();
+
+            folder1.mkdir();
+            folder2.mkdir();
+
+            nested1a.createNewFile();
+            nested1b.createNewFile();
+
+            nested2a.createNewFile();
+            nested2b.createNewFile();
+            try (
+                FileWriter fw1 = new FileWriter(file1);
+                FileWriter fw2 = new FileWriter(file2);
+
+                FileWriter fwNested1a = new FileWriter(nested1a);
+                FileWriter fwNested2b = new FileWriter(nested2b);
+            ) {
+                fw1.write("testing123");
+                fw2.write("testing456");
+
+                fwNested1a.write("I'm a nested file uwu");
+                fwNested2b.write("I'm a different nested file UwU");
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        add.add(homeFolder);
+
+        Tree.setJitFolder(jitFolder);
+
+        Tree tree = Tree.createTree();
+
+        assertEquals(8, tree.getSize());
     }
 }

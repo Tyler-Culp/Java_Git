@@ -8,7 +8,6 @@ import java.util.Scanner;
 public class CommitObject extends AbstractJitObject {
     private File jitFolder;
     private Tree root;
-    public String hash;
     public String message;
     public String prevCommit;
 
@@ -16,6 +15,8 @@ public class CommitObject extends AbstractJitObject {
         this.jitFolder = jitFolder;
         this.file = new File(jitFolder.getParent());
         this.message = message;
+        this.prevCommit = getPrevCommitHash();
+        Tree.setJitFolder(jitFolder);
         this.root = Tree.createTree();
         this.objectString = makeObjectString();
         this.hash = hash(this.objectString);
@@ -25,6 +26,10 @@ public class CommitObject extends AbstractJitObject {
         if (!resetIndexAndHEAD()) return false;
         File objectsFolder = new File(this.jitFolder.getPath() + "/objects");
         return addToObjectsFolder(objectsFolder, this.objectString);
+    }
+
+    public Tree getRoot() {
+        return this.root;
     }
 
     private boolean resetIndexAndHEAD() {
@@ -75,6 +80,7 @@ public class CommitObject extends AbstractJitObject {
         String username  = System.getProperty("user.name") + "\n";
         String commitTreeHash = Tree.getHash(this.root) + "\n";
         String prevCommitTreeHash = getPrevCommitHash();
+        prevCommitTreeHash = prevCommitTreeHash.equals("") ? "\n" : prevCommitTreeHash;
         objString += username + this.message + "\n" + commitTreeHash + prevCommitTreeHash; 
         return objString;
     }

@@ -35,12 +35,14 @@ public class Tree extends AbstractJitObject {
     private static File objectsFolder;
     private static File indexFile;
     private static Map<String, String> stagedFiles = new HashMap<>();
+    private int size;
 
     public Tree() {
         this.fileName = null;
         this.hash = null;
         this.objectString = null;
         this.file = null;
+        this.size = 0;
         this.children = new ArrayList<>(); // All blobs will only include hash references
     }
 
@@ -49,6 +51,7 @@ public class Tree extends AbstractJitObject {
         this.hash = hash;
         this.objectString = null;
         this.file = null;
+        this.size = 0;
         this.children = new ArrayList<>();
     }
 
@@ -62,6 +65,10 @@ public class Tree extends AbstractJitObject {
 
     private void setHash(String hash) {
         this.hash = hash;
+    }
+
+    public int getSize() {
+        return this.size;
     }
 
     public static void setJitFolder(File folder) {
@@ -98,8 +105,9 @@ public class Tree extends AbstractJitObject {
             Scanner sc = new Scanner(headFile)
         )
         {
-            String hash = sc.nextLine().replace("\n", ""); // hacky way to just get the hash without \n
-            hashTree = createTreeFromHash(hash);
+            String prevCommitHash = sc.nextLine().replace("\n", ""); // hacky way to just get the hash without \n
+            String prevTreeHash = getTreeHashFromCommit(prevCommitHash);
+            hashTree = createTreeFromHash(prevTreeHash);
 
             return mergeTrees(indexTree, hashTree);
         }
@@ -109,18 +117,38 @@ public class Tree extends AbstractJitObject {
         }
     }
 
+    private static String getTreeHashFromCommit(String commitHash) {
+        String frontHash = commitHash.substring(0, 2);
+        String backHash = commitHash.substring(2);
+
+        File commitFile = new File(jitFolder.getPath() + "/objects/" + frontHash + "/" + backHash);
+        assert(commitFile.exists());
+
+        String commitString = AbstractJitObject.readFileFromObjects(commitFile);
+        String[] lines = commitString.split("\n");
+
+        assert(lines.length >= 3);
+
+        String treeHash = lines[2];
+
+        return treeHash;
+    }
+
     /**
      * Create hashes for trees recursively, adding tree objects to objects folder as we go.
      * Can be called after createTree() function when making a commit object. Will return root hash
-     * to be used in commit object and will add needed trees to objects folder as we go
-     *
+     * to be used in commit object and will add needed trees to objects folder as we go.
+     * 
+     * TODO: Split this up into a few functions so that one builds the objects string
      * 
      * @param tree - the tree which we want to get a hash for
      * @return - hash of created tree added to objects folder
      */
     public static String getHash(Tree root) {
         StringBuilder treeString = new StringBuilder();
-
+        assert(root.fileName != null);
+        treeString.append(root.fileName + "\n");
+        assert(root != null);
         List<AbstractJitObject> children = root.children;
 
         for (AbstractJitObject child : children) {
@@ -160,9 +188,9 @@ public class Tree extends AbstractJitObject {
      */
     public static Tree createTreeFromHash(String hash) {    
         String frontHash = hash.substring(0, 2);
-        String backHash = hash.substring(2, hash.length());
+        String backHash = hash.substring(2);
 
-        File toRead = new File(jitFolder.getPath() + "/" + frontHash + "/" + backHash);
+        File toRead = new File(jitFolder.getPath() + "/objects/" + frontHash + "/" + backHash);
         assert(toRead.exists());
 
         String fileString = AbstractJitObject.readFileFromObjects(toRead);
@@ -182,6 +210,7 @@ public class Tree extends AbstractJitObject {
             if (type.equals("blob")) {
                 if (stagedFiles.containsKey(name)) continue; // No need to add a blob that's been staged
                 else {
+                    tree.size++;
                     tree.addToChildren(new Blob(name, currHash));
                 }
             }
@@ -189,6 +218,7 @@ public class Tree extends AbstractJitObject {
                 Tree childTree = createTreeFromHash(currHash);
                 if (childTree.children.size() == 0) continue;
                 // This is a recurse case, need add a new tree made by this function to curr Tree children
+                tree.size += childTree.size + 1;
                 tree.addToChildren(childTree);
             }
         }
@@ -222,11 +252,13 @@ public class Tree extends AbstractJitObject {
             if (child.getName().equals(".jit")) continue;
             String fileName = child.getName();
             if (child.isFile() && stagedFiles.containsKey(fileName)) {
+                tree.size++;
                 tree.addToChildren(new Blob(fileName, stagedFiles.get(fileName)));
             }
             else if (child.isDirectory()) { // If it is a directory then recursively call the create tree method
                 Tree childTree = createTreeFromIndex(child);
                 if (childTree.children.size() > 0) { // The child tree actually has files to contribute from staging
+                    tree.size += childTree.size + 1; // +1 to include the parent folder also tracking it
                     tree.addToChildren(childTree);
                 }
             }
@@ -252,7 +284,9 @@ public class Tree extends AbstractJitObject {
         lst.addAll(fromHash.children);
 
         Tree merged = new Tree();
+        merged.fileName = "/"; //Set name to be just backslash representing top level dir
         merged.children = lst;
+        merged.size = stagedChanges.size + fromHash.size;
 
         return merged;
     }
