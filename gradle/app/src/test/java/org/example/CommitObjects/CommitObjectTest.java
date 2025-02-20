@@ -41,7 +41,7 @@ public class CommitObjectTest {
         assertEquals("", commitObject.prevCommit);
 
         String username  = System.getProperty("user.name") + "\n";
-        String expected = username + message + "\n" + commitObject.getRoot().hash + "\n\n";
+        String expected = "commit\n" + username + message + "\n" + commitObject.getRoot().hash + "\n\n";
         assertEquals(expected, commitObject.objectString);
     }
 

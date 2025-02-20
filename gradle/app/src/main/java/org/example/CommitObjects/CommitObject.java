@@ -6,6 +6,10 @@ import java.util.Scanner;
 
 
 public class CommitObject extends AbstractJitObject {
+    public static final int userNameIndex = 1;
+    public static final int commitTreeHashIndex = 2;
+    public static final int prevCommitHashIndex = 3;
+
     private File jitFolder;
     private Tree root;
     public String message;
@@ -49,18 +53,18 @@ public class CommitObject extends AbstractJitObject {
     }
 
     private String getPrevCommitHash() {
-        String prevCommitTreeHash = "";
+        String prevCommitHash = "";
 
         File headFile = new File(this.jitFolder.getPath() + "/HEAD");
         if (headFile.length() > 0) { //previous commit does exist
             try (Scanner sc = new Scanner(headFile)) {
-                prevCommitTreeHash = sc.nextLine().replace("\n", "");
+                prevCommitHash = sc.nextLine().replace("\n", "");
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
         } 
-        return prevCommitTreeHash;
+        return prevCommitHash;
     }
 
     /**
@@ -76,12 +80,12 @@ public class CommitObject extends AbstractJitObject {
      * 
      */
     private String makeObjectString() {
-        String objString = "";
+        String objString = "commit\n";
         String username  = System.getProperty("user.name") + "\n";
         String commitTreeHash = Tree.getHash(this.root) + "\n";
-        String prevCommitTreeHash = getPrevCommitHash();
-        prevCommitTreeHash = prevCommitTreeHash.equals("") ? "\n" : prevCommitTreeHash;
-        objString += username + this.message + "\n" + commitTreeHash + prevCommitTreeHash; 
+        String prevCommitHash = getPrevCommitHash();
+        prevCommitHash = prevCommitHash.equals("") ? "\n" : prevCommitHash;
+        objString += username + this.message + "\n" + commitTreeHash + prevCommitHash; 
         return objString;
     }
 }

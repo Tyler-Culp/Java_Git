@@ -46,6 +46,22 @@ public class Main {
                     System.out.println("Error when adding things to staging");
                 }
                 break;
+            case "commit":
+                if (args.length >= 2) {
+                    String message = args[1];
+                    Commit commit = new Commit(jitFolder, message);
+
+                    if (commit.commit()) {
+                        System.out.println("Commit successful");
+                    }
+                    else {
+                        System.out.println("Commit failed");
+                    }
+                }
+                else {
+                    System.out.println("Must include a message for the commit");
+                }
+                break;
             case "FindJit":
                 FindJit finder = new FindJit();
                 System.out.println("Found .jit in " + finder.find(userDir).getName());

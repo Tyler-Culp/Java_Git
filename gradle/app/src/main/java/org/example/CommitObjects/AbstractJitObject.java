@@ -136,6 +136,17 @@ public abstract class AbstractJitObject {
         }
     }
 
+    public static String readFileFromObjects(String fileHash, File jitFolder) {
+        String topHash = fileHash.substring(0, 2);
+        String bottomHash = fileHash.substring(2);
+
+        File objectToRead = new File(jitFolder.getPath() + "/objects/" + topHash + "/" + bottomHash);
+
+        assert(objectToRead.exists());
+
+        return readFileFromObjects(objectToRead);
+    }
+
     @Override
     public String toString() {
         return "hash = " + this.hash;

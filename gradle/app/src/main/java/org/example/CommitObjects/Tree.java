@@ -129,7 +129,7 @@ public class Tree extends AbstractJitObject {
 
         assert(lines.length >= 3);
 
-        String treeHash = lines[2];
+        String treeHash = lines[3];
 
         return treeHash;
     }
