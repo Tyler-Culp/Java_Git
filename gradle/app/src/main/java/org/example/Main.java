@@ -9,14 +9,11 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        if (args.length <= 0) return; 
+        if (args.length <= 0) printHelp(); 
 
         String userDir = System.getProperty("user.dir");
 
         File jitFolder = new FindJit().find(userDir);
-        File indexFile = new File(jitFolder.getPath() + "/index");
-        File objectsFolder = new File(jitFolder.getPath() + "/objects");
-
         String givenCommand = args[0];
 
         switch (givenCommand) {
@@ -67,11 +64,16 @@ public class Main {
                 System.out.println("Found .jit in " + finder.find(userDir).getName());
                 break;
             default:
-                System.out.println("Command line options:");
-                System.out.println("init - Create a new jit directory in current working directory");
-                System.out.println("status - Check file changes in working directory");
-                System.out.println("add - Add changed files to staging");
-                break;
+                printHelp();
         }
+    
+    }
+    private static void printHelp() {
+        System.out.println("Command line options:");
+        System.out.println("init - Create a new jit directory in current working directory");
+        System.out.println("status - Check file changes in working directory");
+        System.out.println("add - Add changed files to staging");
+        System.out.println("commit - Commit staged changes");
+        System.out.println("help - view options");
     }
 }

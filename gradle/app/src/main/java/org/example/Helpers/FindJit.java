@@ -22,7 +22,7 @@ public class FindJit {
             }
             homeFile = new File(homeDir);
         }
-        System.out.println("Unable to find jit folder");
+        // System.out.println("Unable to find jit folder");
         return null;
     }
 }
