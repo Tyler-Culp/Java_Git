@@ -30,6 +30,17 @@ public class Checkout {
         this.commitRoot = Tree.createTreeFromHash(commitTreeHash);
     }
 
+    public File checkout() {
+        return createDir(this.commitRoot, this.jitFolder.getParentFile());
+    }
+
+    public File checkoutCopy() {
+        File copyDir = new File(this.jitFolder.getParentFile().getPath() + "/copy");
+        copyDir.mkdir();
+        File builtCopy = createDir(this.commitRoot, copyDir);
+        return builtCopy;
+    }
+
     /**
      * Recursively creates the entire directory structure necessary for a checkout.
      * 

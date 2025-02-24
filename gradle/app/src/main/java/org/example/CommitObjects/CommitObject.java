@@ -7,8 +7,9 @@ import java.util.Scanner;
 
 public class CommitObject extends AbstractJitObject {
     public static final int userNameIndex = 1;
-    public static final int commitTreeHashIndex = 2;
-    public static final int prevCommitHashIndex = 3;
+    public static final int commitMessage = 2;
+    public static final int commitTreeHashIndex = 3;
+    public static final int prevCommitHashIndex = 4;
 
     private File jitFolder;
     private Tree root;
@@ -36,6 +37,17 @@ public class CommitObject extends AbstractJitObject {
         return this.root;
     }
 
+    public String getHash() {
+        return this.hash;
+    }
+    
+    /**
+     * Reset index and Head files on a commit.
+     * For index file need to wipe it clean (as we are committing anything staged)
+     * For HEAD file change its first line to be the new hash
+     * 
+     * @return true if resets are successful.
+     */
     private boolean resetIndexAndHEAD() {
         File headFile = new File(this.jitFolder.getPath() + "/HEAD");
         File indexFile = new File(this.jitFolder.getPath() + "/index");
@@ -52,6 +64,10 @@ public class CommitObject extends AbstractJitObject {
         return true;
     }
 
+    /**
+     * Read last commit hash from HEAD file when creating new commit
+     * @return prev commit hash or empty string if this is first commit
+     */
     private String getPrevCommitHash() {
         String prevCommitHash = "";
 

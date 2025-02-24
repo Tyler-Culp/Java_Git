@@ -142,7 +142,9 @@ public abstract class AbstractJitObject {
 
         File objectToRead = new File(jitFolder.getPath() + "/objects/" + topHash + "/" + bottomHash);
 
-        assert(objectToRead.exists());
+        if (!objectToRead.exists()) {
+            return null;
+        }
 
         return readFileFromObjects(objectToRead);
     }
