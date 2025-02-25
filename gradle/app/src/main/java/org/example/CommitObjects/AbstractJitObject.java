@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
-public abstract class AbstractJitObject {
+public abstract class AbstractJitObject implements Comparable<AbstractJitObject> {
     public File file;
     public String fileName;
     public String objectString;
@@ -58,6 +58,9 @@ public abstract class AbstractJitObject {
      * @param objectString - The string which we will be compressing and adding to the objects folder
      * @return true if file was successfully created and written to, false otherwise
      */
+    public int compareTo(AbstractJitObject o) {
+        return this.hash.compareTo(o.hash);
+    }
     public boolean addToObjectsFolder(File objectsFolder, String objectString) {
             /*
              * Index file need to have form line
