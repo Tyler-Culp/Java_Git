@@ -1,5 +1,7 @@
 package org.example.Commands;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.File;
 import java.io.FileWriter;
 
@@ -44,4 +46,36 @@ public class CheckoutTest {
 
         assert(checkedOutFolder.list().length == 0);
     }
+    
+    // @Test
+    // @Order(2)
+    // void checkoutSingleFileDirectory() {
+    //     File groceries = new File(homeDir + "/groceries.txt");
+
+    //     try {
+    //         groceries.createNewFile();
+    //         try (FileWriter fw = new FileWriter(groceries)) {
+    //             fw.write("I'm a grocery list\nLook at me yay");
+    //         }
+    //     }
+    //     catch (Exception e) {
+    //         e.printStackTrace();
+    //         assert(false);
+    //     }
+
+    //     Commit commit = new Commit(jitFolder, "groceries file created");
+    //     assert(commit.commit());
+
+    //     String prevCommitHash = commit.getCommitHash();
+
+    //     Checkout chkout = new Checkout(jitFolder, prevCommitHash);
+
+    //     File copyDir = chkout.checkoutCopy();
+
+    //     assert(copyDir.exists() && copyDir.isDirectory());
+
+    //     System.out.println(copyDir.listFiles().length);
+
+    //     assertEquals(1, copyDir.listFiles().length);
+    // }
 }

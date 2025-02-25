@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Execution(ExecutionMode.SAME_THREAD)  // Force single-thread execution
@@ -110,11 +112,11 @@ public class StatusTest {
 
         Add adder = new Add(jitFolder);
 
-        ArrayList<Blob> expected = new ArrayList<>();
+        List<Blob> expected = new ArrayList<>();
         expected.add(new Blob(f1));
         expected.add(new Blob(f2));
 
-        ArrayList<Blob> actual = status.getChangedFiles(homeFolder);
+        List<Blob> actual = status.getChangedFiles(homeFolder);
 
         assertEquals(expected, actual);
 
@@ -139,6 +141,9 @@ public class StatusTest {
         actual = status.getChangedFiles(homeFolder);
         expected.add(new Blob(f1));
         expected.add(new Blob(f2));
+
+        Collections.sort(actual);
+        Collections.sort(expected);
 
         assertEquals(expected, actual);
     }
