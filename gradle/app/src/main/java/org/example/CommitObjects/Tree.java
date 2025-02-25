@@ -202,6 +202,9 @@ public class Tree extends AbstractJitObject {
             String name = data[2];
 
             if (type.equals("blob")) {
+                // stagedFiles map is incorrect after committing for some reason
+                // this is what is causing checkouts not to work because for whatever reason even though index is empty
+                // stagedFiles didn't get rebuilt
                 if (stagedFiles.containsKey(name)) continue; // No need to add a blob that's been staged
                 else {
                     tree.size++;

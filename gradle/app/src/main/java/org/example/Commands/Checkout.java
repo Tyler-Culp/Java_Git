@@ -2,10 +2,10 @@ package org.example.Commands;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.sql.Blob;
 import java.util.List;
 
 import org.example.CommitObjects.AbstractJitObject;
+import org.example.CommitObjects.Blob;
 import org.example.CommitObjects.CommitObject;
 import org.example.CommitObjects.Tree;
 
@@ -27,6 +27,7 @@ public class Checkout {
         this.commitRootHash = commitRootHash;
         this.commitObjString = AbstractJitObject.readFileFromObjects(this.commitRootHash, this.jitFolder);
         String commitTreeHash = getTreeHash(commitObjString);
+        Tree.setJitFolder(jitFolder); // This is needed for testing, in the actual application the main function just needs to do this
         this.commitRoot = Tree.createTreeFromHash(commitTreeHash);
     }
 
@@ -66,10 +67,10 @@ public class Checkout {
                     rebuildingFile.createNewFile();
                     try (FileWriter fw = new FileWriter(rebuildingFile)) {
                         // Extra step to read from objects, pretty sure I can just skip first line of objectString
-                        // fw.write(AbstractJitObject.readFileFromObjects(child.hash, jitFolder)); 
-                        String blobStringWithoutFirstLine = child.objectString.substring(child.objectString.indexOf('\n') + 1);
-                        fw.write(blobStringWithoutFirstLine);
-
+                        String fileContent = AbstractJitObject.readFileFromObjects(child.hash, jitFolder);
+                        int endOfFirstLine = fileContent.indexOf("\n");
+                        fileContent = fileContent.substring(endOfFirstLine + 1, fileContent.length() - 1); // I think something is adding an extra new line to the end
+                        fw.write(fileContent); 
                     }
                 }
                 catch (Exception e) {
