@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 
 public class CommitObject extends AbstractJitObject {
+    public static final int commitHeader = 0;
     public static final int userNameIndex = 1;
     public static final int commitMessage = 2;
     public static final int commitTreeHashIndex = 3;

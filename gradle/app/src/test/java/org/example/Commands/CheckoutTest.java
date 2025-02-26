@@ -171,4 +171,36 @@ public class CheckoutTest {
             assert(false);
         }
     }
+    @Test
+    @Order(4)
+    void createNewFileOnTopOfPrevCheckout() {
+        File names = new File(homeFolder.getPath() + "/names.txt");
+
+        try {
+            names.createNewFile();
+            try (FileWriter fw = new FileWriter(names)) {
+                fw.write("names, names, ...\nmore names");
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            assert(false);
+        }
+        Add adder = new Add(jitFolder);
+        adder.add(homeDir);
+
+        Commit commit = new Commit(jitFolder, "groceries file created");
+        boolean commitSuccess = commit.commit();
+        assert(commitSuccess);
+
+        String prevCommitHash = commit.getCommitHash();
+
+        Checkout chkout = new Checkout(jitFolder, prevCommitHash);
+
+        File copyDir = chkout.checkoutCopy();
+
+        assert(copyDir.exists() && copyDir.isDirectory());
+
+        assertEquals(4, copyDir.listFiles().length);
+    }
 }

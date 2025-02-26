@@ -26,12 +26,18 @@ public class Checkout {
         this.jitFolder = jitFolder;
         this.commitRootHash = commitRootHash;
         this.commitObjString = AbstractJitObject.readFileFromObjects(this.commitRootHash, this.jitFolder);
+
+        if (this.commitObjString == null) throw new Error("commit hash does not exist");
+        String objectType = this.commitObjString.split("\n")[CommitObject.commitHeader];
+        if (!objectType.equals("commit")) throw new Error("hash given was not a commit"); 
+
         String commitTreeHash = getTreeHash(commitObjString);
         Tree.setJitFolder(jitFolder); // This is needed for testing, in the actual application the main function just needs to do this
         this.commitRoot = Tree.createTreeFromHash(commitTreeHash);
     }
 
     public File checkout() {
+        assert(clearHomeDir(jitFolder.getParentFile()));
         return createDir(this.commitRoot, this.jitFolder.getParentFile());
     }
 
@@ -40,6 +46,31 @@ public class Checkout {
         copyDir.mkdir();
         File builtCopy = createDir(this.commitRoot, copyDir);
         return builtCopy;
+    }
+
+    /**
+     * Preps the home directory for checkout. Everything is deleted to ensure the folder is returned
+     * to the same state it was in when the commit that is being checked out was committed.
+     * 
+     * Slightly scary to do this to be honest, alternatively could build a copy of the folder to checkout first
+     * and then replace main folder with that one.
+     * 
+     * @param currFolder - The current folder that we need to recursively "clear" or delete
+     * @return boolean indicating whether everything was cleaned out correctly
+     */
+    private boolean clearHomeDir(File currFolder) {
+        if (!currFolder.isDirectory() || !currFolder.getName().equals(".jit")) return false;
+        boolean success = true;
+        File[] children = currFolder.listFiles();
+        for (File child : children) {
+            if (child.isFile()) {
+                success &= child.delete();
+            }
+            else if (child.isDirectory()) {
+                success &= clearHomeDir(child);
+            }
+        }
+        return success;
     }
 
     /**
